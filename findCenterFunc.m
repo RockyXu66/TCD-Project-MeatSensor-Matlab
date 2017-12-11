@@ -1,4 +1,5 @@
-function[croppedImg] = findCenterFunc(img, neigh, disksize, threshold, extendCoor)
+% function[croppedImg] = findCenterFunc(img, neigh, disksize, threshold, extendCoor)
+function[croppedImg] = findCenterFunc(img, neigh, disksize, threshold, extendRatio, file_index)
 % calculate ROI by using filter, threshold, removing circular holes,
 % connected component and find the largest object
 originalImg = img;
@@ -40,8 +41,9 @@ bw(cc.PixelIdxList{idx}) = true;
 stats=[regionprops(bw)];
 
 % Finding out the centroid of the bounding box
-centroids=stats.Centroid;
+% centroids=stats.Centroid;
 boundingBox = stats.BoundingBox;
+centroids = [boundingBox(1)+boundingBox(3)/2, boundingBox(2)+boundingBox(4)/2];
 % After applying all the filtering techniques, original image is
 % reconstructed
 
@@ -50,21 +52,32 @@ boundingBox = stats.BoundingBox;
 % orr(:,:,1)=immultiply(img(:,:,1),bw);
 % orr(:,:,2)=immultiply(img(:,:,2),bw);
 % orr(:,:,3)=immultiply(img(:,:,3),bw);
-[rect] = cropfunction(centroids(:,1),centroids(:,2),extendCoor);
 
+% Cropped roi to center square
+% extendCoor = int16(sqrt(extendRatio * stats.Area)/2);
+% [rect] = cropfunction(centroids(:,1),centroids(:,2),extendCoor);
 
+% Cropped roi to center rectangle
+x = boundingBox(3);
+y = boundingBox(4);
+[extendCoor_rect] = [int16(sqrt(extendRatio * stats.Area * x / y) / 2), int16(sqrt(extendRatio * stats.Area * y / x) / 2)];
+[rect] = cropRectFunc(centroids(:,1), centroids(:,2), extendCoor_rect);
 
-% figure;
-% hold on;
-% imshow(originalImg);
-% hold on;
-% % Then, from the help:
-% rectangle('Position',boundingBox, 'EdgeColor','g', 'LineWidth',2);
-% hold on;
-% rectangle('Position', rect, 'EdgeColor', 'g', 'LineWidth', 2);
-% hold on;
-% plot(centroids(:,1),centroids(:,2), 'g*');
-% hold off;
+isDraw = (file_index==1||file_index==5||file_index==11||file_index==21||file_index==31||file_index>38);
+isDraw = false;
+if isDraw
+    figure;
+    hold on;
+    imshow(originalImg);
+    hold on;
+    % Then, from the help:
+    rectangle('Position',boundingBox, 'EdgeColor','g', 'LineWidth',2);
+    hold on;
+    rectangle('Position', rect, 'EdgeColor', 'g', 'LineWidth', 2);
+    hold on;
+    plot(centroids(:,1),centroids(:,2), 'g*');
+    hold off;
+end
 
 
 croppedImg = imcrop(originalImg, rect);

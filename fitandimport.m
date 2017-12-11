@@ -1,14 +1,14 @@
-function [settings,errors,f,plotv] = fitandimport(X,Y,ftype)
+function [settings,errors,f] = fitandimport(X,Y,ftype)
 
-[test,stats,attempts] = fit(X,Y,ftype); % uncomment for more data
+[test,stats] = fit(X,Y,ftype); % uncomment for more data
 
-indexmax = find(max(Y) == Y);
-xmax = X(indexmax);
-ymax = Y(indexmax);
-xmax2 = X(indexmax);
-ymax2 = Y(indexmax);
-
-plotv = [xmax, ymax,xmax2, ymax2];
+% indexmax = find(max(Y) == Y);
+% xmax = X(indexmax);
+% ymax = Y(indexmax);
+% xmax2 = X(indexmax);
+% ymax2 = Y(indexmax);
+% 
+% plotv = [xmax, ymax,xmax2, ymax2];
 
 if (strcmp(ftype,'exp2'))
     f = str2func('@(a,b,c,d,x) a*exp(b*x) + c*exp(d*x)');

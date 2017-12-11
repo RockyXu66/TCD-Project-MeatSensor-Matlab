@@ -3,16 +3,21 @@
 clear all; close all; clc;
 format short g
 
-foldername = 'MT2_L-3';
+trainpath = 'D:/TCD Project (meatsensor)/Yinghan/MT3_R-1';
+% testpath = 'D:/TCD Project (meatsensor)/Yinghan/Dataset_3_copy/MT3_R-1-Contrast_1.5';
+% testpath = 'D:/TCD Project (meatsensor)/Yinghan/Dataset_3_copy/MT3_R-1-LBrightness_50';
+testpath = 'D:/TCD Project (meatsensor)/Yinghan/Dataset_3_copy/MT3_R-1-Noise_0.005';
+% testpath = 'D:/TCD Project (meatsensor)/Yinghan/MT3_R-1';
+foldername = 'MT3_R-1';
 
-load(cat(2,foldername, '/', foldername, '_para.mat'));
+load(cat(2,trainpath, '/Para.mat'));
 % load('MT3_R-1/MT3_R-1_para.mat');
-load(cat(2,foldername, '/', foldername, '_Qresult.mat'));
+load(cat(2,testpath, '/Qresult.mat'));
 load dataset3.mat
 
 close all;
 Q = Q';
-original_O2 = xlsread(cat(2,foldername,'/',foldername,'_O2.xlsx'));
+original_O2 = xlsread(cat(2,trainpath,'/',foldername,'_O2.xlsx'));
 estimated_O2 = zeros(size(Q,1), 1);
 abs_error = zeros(size(Q,1), 1);
 for i = 1:1:size(Q,1)
@@ -34,4 +39,9 @@ end
 T = table(t_original_O2, t_estimated_O2, t_abs_error);
 
 % MT3_R_2_Q = dataset3{4,1,1,1}.Q;
+t_abs_error_part = abs_error(22:35);
 average_error = mean(t_abs_error);
+average_part = mean(t_abs_error_part);
+
+figure();
+plot(O2, T_all.abs_error,'b');

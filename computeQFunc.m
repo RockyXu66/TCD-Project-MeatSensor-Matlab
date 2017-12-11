@@ -20,7 +20,7 @@ if (strcmp(method,'HSB'))
     
     out=rgb2hsv(img);
     % Taking out the Hue component
-    OUT=out(:,:,hsv_chan);% Finding out the coordinates of the centroid
+    OUT=out(:,:,hsv_chan);
     f10RGB = img;
 %     f10RGB=imcrop(im,rect);
     % f10=imcrop(OUT,rect);
@@ -30,10 +30,31 @@ if (strcmp(method,'HSB'))
     % t=max(OUT(:));
     t = 1;
     
+%     figure, imshow(img);
+    
+%     % Preallocate arrays
+%     Q = zeros(length(f10), 'double');
+%     if (hsv_chan == 1)
+%         % Shifting of the Hue
+%         for k=1:length(f10)
+%             for j=1:length(f10)                
+%                 Q(k,j)=f10(k,j)+(t/2);
+%                 if Q(k,j)>t
+%                     Q(k,j)=Q(k,j)-t;
+%                 end
+%             end
+%         end
+%         % Taking out the mean after Hue shift and this is used as the Q value
+%         t5=mean(Q(:));
+%     end
+
+    % Preallocate arrays
+%     Q = zeros(length(f10), 'double');
+    [height, width, color_planes] = size(f10);
     if (hsv_chan == 1)
         % Shifting of the Hue
-        for k=1:length(f10)
-            for j=1:length(f10)
+        for k=1:height
+            for j=1:width                
                 Q(k,j)=f10(k,j)+(t/2);
                 if Q(k,j)>t
                     Q(k,j)=Q(k,j)-t;
