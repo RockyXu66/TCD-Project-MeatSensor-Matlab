@@ -32,7 +32,7 @@ settings_exp2 = [f_exp2.a f_exp2.b f_exp2.c f_exp2.d];
 settings_cubic = [f_cubic.p1 f_cubic.p2 f_cubic.p3 f_cubic.p4];
 settings_poly4 = [f_poly4.p1 f_poly4.p2 f_poly4.p3 f_poly4.p4 f_poly4.p5];
 settings_gauss2 = [f_gauss2.a1 f_gauss2.b1 f_gauss2.c1 f_gauss2.a2 f_gauss2.b2 f_gauss2.c2];
-settings_fou2 = [f_fou2.a0 f_fou2.a1 f_fou2.b1 f_fou2.a2 f_fou2.b2 f_fou2.w];
+settings_
 
 %% Save the curve parameters to the .txt file
 fid=fopen(cat(2, foldername, '/exp2_parameters.txt'),'w');
@@ -66,16 +66,7 @@ fprintf(fid,'b2 = %d \n',settings_gauss2(5));
 fprintf(fid,'c2 = %d \n',settings_gauss2(6));
 fclose(fid);
 
-fid=fopen(cat(2, foldername, '/fou2_parameters.txt'),'w');
-fprintf(fid,'a0 = %d \n',settings_fou2(1));
-fprintf(fid,'a1 = %d \n',settings_fou2(2));
-fprintf(fid,'a2 = %d \n',settings_fou2(3));
-fprintf(fid,'b1 = %d \n',settings_fou2(4));
-fprintf(fid,'b2 = %d \n',settings_fou2(5));
-fprintf(fid,'w = %d \n',settings_fou2(6));
-fclose(fid);
-
-errors = min([sse_exp2 sse_cubic sse_linear sse_poly4 sse_gauss2 sse_fou2]);
+errors = min([sse_exp2 sse_cubic sse_linear sse_poly4 sse_gauss2]);
 if errors == sse_exp2
     settings = settings_exp;
     f = f_exp2;
@@ -92,10 +83,6 @@ elseif errors == sse_gauss2
     settings = settings_gauss2;
     f = f_gauss2;
     type = 'gauss2';
-elseif errors == sse_fou2
-    settings = settings_fou2;
-    f = f_fou2;
-    type = 'fou2';
 else
     settings = settings_linear;
     f = f_linear;
@@ -112,14 +99,11 @@ hold on
 plot(f_poly4, 'magenta');
 hold on
 plot(f_gauss2, 'black');
-hold on
-plot(f_fou2, 'cyan');
 % title(foldername);
 xlabel('O2') % x-axis label
 ylabel('Q (Mean hue)') % y-axis label
 legend('data  | sum of errors', cat(2,'linear   ',num2str(sse_linear)), cat(2,'exp      ',num2str(sse_exp2)),...
-    cat(2,'cubic    ',num2str(sse_cubic)), cat(2,'poly4    ',num2str(sse_poly4)),...
-    cat(2,'gauss2 ',num2str(sse_gauss2)), cat(2,'fou2      ',num2str(sse_fou2)));
+    cat(2,'cubic    ',num2str(sse_cubic)), cat(2,'poly4    ',num2str(sse_poly4)), cat(2,'gauss2 ',num2str(sse_gauss2)));
 hold off
 drawnow
 

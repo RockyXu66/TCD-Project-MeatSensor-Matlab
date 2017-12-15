@@ -10,7 +10,15 @@ format short g
 %% 
 % Specific folder name. This folder contains the images and .xlsx file
 % which contains corresponding O2 values.
-
+% The result will also be saved in this folder
+% prompt = 'Please type in the folder name:';
+% % x = input(prompt)
+% y = x*10
+% foldername = 'D:/TCD Project (meatsensor)/Yinghan/Dataset_3_copy/MT3_R-1_original';
+% foldername = 'D:/TCD Project (meatsensor)/Yinghan/Dataset_3_copy/MT3_R-1-HBrightness_50';
+% foldername = 'D:/TCD Project (meatsensor)/Yinghan/Dataset_3_copy/MT3_R-1-Contrast_1.5';
+% foldername = 'D:/TCD Project (meatsensor)/Yinghan/MT3_R-1';
+% O2_filename = 'MT3_R-1_O2 - Copy.xlsx';
 foldername = 'D:/TCD Project (meatsensor)/Yinghan/MT3_R-1';
 O2_filename = 'MT3_R-1_O2 - Copy.xlsx';
 % foldername = 'MT2_L-3';
@@ -121,10 +129,71 @@ for i = 1:1:numel(img_names)
 end
 
 
-% [f_cubic, stats_cubic] = fit(O2',Q','poly3');
-% settings_cubic = [f_cubic.p1 f_cubic.p2 f_cubic.p3 f_cubic.p4];
+% % % % Get unique O2 and unique average hue value
+% % % unique_O2 = unique(O2);
+% % % unique_avg = zeros(1, 1);
+% % % for i = 1:1:numel(unique_O2)
+% % %     index_avg = find(O2==unique_O2(i));
+% % %     temp = mean(Q(index_avg));
+% % %     unique_avg(i) = temp;
+% % % end
+% % % 
+% % % %% calculate curve
+% % % avg = Q;
+% % % 
+% % % [settings,errors,f] = fitandimport(O2',avg','exp2');
+% % % 
+% % % f_exp = fit(O2', avg', 'exp2');
+% % % f_cubic = fit(O2',avg','poly3','Normalize','on','Robust','Bisquare');
+% % % f_linear = fit(unique_O2', unique_avg', 'poly1');
+% % % [paras_exp, stats_exp] = fit(O2',avg','exp2');
+% % % [paras_cubic, stats_cubic] = fit(O2',avg','poly3','Normalize','on','Robust','Bisquare');
+% % % [paras_linear, stats_linear] = fit(unique_O2', unique_avg', 'poly1');
+% % %  
+% % % plot(f_cubic,'r', O2',avg');
+% % % hold on
+% % % plot(f_exp,'g');
+% % % hold on
+% % % plot(f_linear, 'b');
+% % % hold off
+% % % drawnow
+% % % 
+% % % % Sum squared error
+% % % sse_exp = stats_exp.sse;
+% % % sse_cubic = stats_cubic.sse;
+% % % sse_linear = stats_linear.sse;
+% % % settings_exp = [paras_exp.a paras_exp.b paras_exp.c paras_exp.d];
+% % % settings_cubic = [paras_cubic.p1 paras_cubic.p2 paras_cubic.p3 paras_cubic.p4];
+% % % settings_linear = [paras_linear.p1 paras_linear.p2];
+
+% % Draw the result
+% figure();
+% plot(O2,avg,'b');
+% hold on
+% % plot(O2,med,'r');
+% % hold on
+% plot(O2,f(settings(1),settings(2),settings(3),settings(4),O2),'g'); 
+% % title2 = sprintf('%s %s-%d-%d',Datasets{k1},methods{k2},k3,k4); % testing
+% title(foldername);
+% legend('avg','med','fit');
+% hold off
+% 
+% drawnow
+% titleFit = sprintf(' a = %.4g,b = %.4g,c = %.4g,d = %.4g',...
+%     settings(1),settings(2),settings(3),settings(4));
+% title1 = cat(2,title2,titleFit)
+
+[f_cubic, stats_cubic] = fit(O2',avg','poly3');
 
 [settings, sse, f, type] = fitFunc(O2, Q, foldername);
+
+%% Save the curve parameters to the .txt file
+% fid=fopen(cat(2, foldername, '/', type, '_parameters.txt'),'w');
+% fprintf(fid,'a = %f \n',settings(1));
+% fprintf(fid,'b = %f \n',settings(2));
+% fprintf(fid,'c = %f \n',settings(3));
+% fprintf(fid,'d = %f \n',settings(4));
+% fclose(fid);
 
 % Save the Q result to _Qresult.mat file
 Q_result = cat(2,foldername,'/QResult.mat');
